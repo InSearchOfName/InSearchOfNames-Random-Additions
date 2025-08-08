@@ -13,6 +13,8 @@ import org.bukkit.event.entity.EntityDropItemEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerShearEntityEvent;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -40,46 +42,49 @@ public class ColoredShears {
     }
 
     public static void changeColorOfShears(PlayerInteractEvent event) {
-        Boolean RightClick = null;
+        Boolean rightClick = null;
         if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-            RightClick = true;
-        } else if (event.getAction() == Action.LEFT_CLICK_BLOCK || event.getAction() == Action.LEFT_CLICK_AIR) {
-            RightClick = false;
+            rightClick = true;
+        } else if (event.getAction() == Action.LEFT_CLICK_AIR || event.getAction() == Action.LEFT_CLICK_BLOCK) {
+            rightClick = false;
         }
+        if (rightClick == null) return;
 
         Player player = event.getPlayer();
-        if (player.getOpenInventory().getTopInventory().getType() != InventoryType.CRAFTING) return;
+        InventoryView openInv = player.getOpenInventory();
+        Inventory topInv = openInv.getTopInventory();
 
-        ItemStack item = event.getPlayer().getInventory().getItemInMainHand();
-        if (item.getType() == Material.AIR || !item.hasItemMeta()) return;
+        // Only proceed if player has no GUI open (meaning top inventory is the player's own inventory)
+        if (!(topInv.getType() == InventoryType.CRAFTING && topInv.getHolder() instanceof Player)) {
+            return; // Some GUI is open, ignore event
+        }
+
+        ItemStack item = player.getInventory().getItemInMainHand();
+        if (item.getType() != Material.SHEARS || !item.hasItemMeta()) return;
 
         ItemMeta meta = item.getItemMeta();
         if (meta == null) return;
 
         PersistentDataContainer pdc = meta.getPersistentDataContainer();
-
         if (!pdc.has(SHEAR_COLOR_KEY, PersistentDataType.INTEGER)) return;
 
         Integer ordinal = pdc.get(SHEAR_COLOR_KEY, PersistentDataType.INTEGER);
         if (ordinal == null) return;
 
-        if (RightClick == null) return;
-        else if (RightClick) {
-            ordinal++;
-            if (ordinal >= DyeColor.values().length) ordinal = 0;
+        if (rightClick) {
+            ordinal = (ordinal + 1) % DyeColor.values().length;
             player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1.0f, 2.0f);
         } else {
-            ordinal--;
-            if (ordinal < 0) ordinal = DyeColor.values().length - 1;
-
-            player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1.0f, 0.5f); // Chipmunk tone
+            ordinal = (ordinal - 1 + DyeColor.values().length) % DyeColor.values().length;
+            player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1.0f, 0.5f);
         }
 
         pdc.set(SHEAR_COLOR_KEY, PersistentDataType.INTEGER, ordinal);
         item.setItemMeta(meta);
         updateMeta(item);
-
+        player.getInventory().setItemInMainHand(item);
     }
+
 
 
     private static void updateMeta(ItemStack item) {
