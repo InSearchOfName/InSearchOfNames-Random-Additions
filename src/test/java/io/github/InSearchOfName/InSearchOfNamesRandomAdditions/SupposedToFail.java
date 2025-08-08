@@ -6,6 +6,6 @@ public class SupposedToFail {
 
     @Test
     public void supposedToFail() {
-        assert 1 + 1 == 2;
+        assert 1 + 1 == 3;
     }
 }
