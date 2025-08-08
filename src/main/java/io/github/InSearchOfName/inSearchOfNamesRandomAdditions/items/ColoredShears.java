@@ -4,10 +4,7 @@ import io.github.InSearchOfName.inSearchOfNamesRandomAdditions.InSearchOfNamesRa
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
-import org.bukkit.DyeColor;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
-import org.bukkit.Sound;
+import org.bukkit.*;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Sheep;
@@ -146,10 +143,13 @@ public class ColoredShears {
     public static void preventNaturallyDroppedWool(EntityDropItemEvent event) {
         if (!(event.getEntity() instanceof Sheep sheep)) return;
 
-        if (recentlySheared.contains(sheep.getUniqueId())){
-            recentlySheared.remove(sheep.getUniqueId());
+        if (recentlySheared.contains(sheep.getUniqueId())) {
             event.setCancelled(true);
+            Bukkit.getScheduler().runTaskLater(InSearchOfNamesRandomAdditions.getPlugin(), () ->
+                    recentlySheared.remove(sheep.getUniqueId()), 1L
+            );
         }
+
 
     }
 
