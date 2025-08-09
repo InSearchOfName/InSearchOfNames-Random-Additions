@@ -158,7 +158,7 @@ public class ColoredShears {
 
     }
 
-    private static DyeColor getColorOfShears(ItemStack item) {
+    public static DyeColor getColorOfShears(ItemStack item) {
         if (item == null || !item.hasItemMeta()) return null;
 
         ItemMeta meta = item.getItemMeta();
@@ -176,5 +176,9 @@ public class ColoredShears {
 
     public static NamespacedKey getShearColorKey() {
         return SHEAR_COLOR_KEY;
+    }
+
+    public static Set<UUID>  getRecentlySheared() {
+        return recentlySheared;
     }
 }
