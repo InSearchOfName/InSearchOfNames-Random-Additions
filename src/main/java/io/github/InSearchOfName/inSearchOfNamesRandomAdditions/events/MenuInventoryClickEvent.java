@@ -16,7 +16,7 @@ public class MenuInventoryClickEvent implements Listener {
     public void onInventoryClick(InventoryClickEvent event) {
         Inventory inventory = event.getInventory();
 
-        if (!(inventory.getHolder() instanceof MenuInventory menuInventory)){
+        if (!(inventory.getHolder() instanceof MenuInventory menuInventory)) {
             return;
         }
 

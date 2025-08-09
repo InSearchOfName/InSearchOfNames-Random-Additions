@@ -34,7 +34,7 @@ public class ColoredShears {
         meta.displayName(Component.text("Colored Shears").decorate(TextDecoration.BOLD));
         meta.getPersistentDataContainer().set(SHEAR_COLOR_KEY, PersistentDataType.INTEGER, DyeColor.WHITE.ordinal());
 
-        meta.addEnchant(Enchantment.UNBREAKING,1, true);
+        meta.addEnchant(Enchantment.UNBREAKING, 1, true);
         meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         item.setItemMeta(meta);
         updateMeta(item);
@@ -86,7 +86,6 @@ public class ColoredShears {
     }
 
 
-
     private static void updateMeta(ItemStack item) {
         if (item == null || !item.hasItemMeta()) return;
 
@@ -102,16 +101,16 @@ public class ColoredShears {
 
         // Create a lore line with the selected color
         List<Component> lore = new ArrayList<>();
-        lore.add(Component.text("When shearing a sheep no matter the color of the wool,").color(TextColor.color(0,170,170)));
-        lore.add(Component.text("it will change into the color of the Colored Shears.").color(TextColor.color(0,170,170)));
+        lore.add(Component.text("When shearing a sheep no matter the color of the wool,").color(TextColor.color(0, 170, 170)));
+        lore.add(Component.text("it will change into the color of the Colored Shears.").color(TextColor.color(0, 170, 170)));
 
         lore.add(Component.text("Selected Color: ")
                 .append(
                         Component.text(color.name().toUpperCase()).color(TextColor.color(color.getColor().asRGB()))
                 ).decorate(TextDecoration.BOLD));
         lore.add(Component.empty());
-        lore.add(Component.text("Right-Click: Next Color").decorate(TextDecoration.BOLD).color(TextColor.color(255,170,0)));
-        lore.add(Component.text("Left-Click: Previous Color").decorate(TextDecoration.BOLD).color(TextColor.color(255,170,0)));
+        lore.add(Component.text("Right-Click: Next Color").decorate(TextDecoration.BOLD).color(TextColor.color(255, 170, 0)));
+        lore.add(Component.text("Left-Click: Previous Color").decorate(TextDecoration.BOLD).color(TextColor.color(255, 170, 0)));
 
         // Set the lore
         meta.lore(lore);
@@ -178,7 +177,7 @@ public class ColoredShears {
         return SHEAR_COLOR_KEY;
     }
 
-    public static Set<UUID>  getRecentlySheared() {
+    public static Set<UUID> getRecentlySheared() {
         return recentlySheared;
     }
 }
