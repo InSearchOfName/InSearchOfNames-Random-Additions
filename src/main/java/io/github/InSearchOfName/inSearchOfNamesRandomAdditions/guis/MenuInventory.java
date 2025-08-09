@@ -20,10 +20,10 @@ public class MenuInventory implements InventoryHolder {
         }
         for (int i = 9; i < 50; i += 9) {
             inventory.setItem(i, ItemStack.of(Material.GRAY_STAINED_GLASS_PANE));
-            inventory.setItem(i-1, ItemStack.of(Material.GRAY_STAINED_GLASS_PANE));
+            inventory.setItem(i - 1, ItemStack.of(Material.GRAY_STAINED_GLASS_PANE));
         }
         for (int i = 45; i < 54; i++) {
-            inventory.setItem(i,ItemStack.of(Material.GRAY_STAINED_GLASS_PANE));
+            inventory.setItem(i, ItemStack.of(Material.GRAY_STAINED_GLASS_PANE));
         }
         inventory.setItem(10, ColoredShears.createColoredShears());
     }

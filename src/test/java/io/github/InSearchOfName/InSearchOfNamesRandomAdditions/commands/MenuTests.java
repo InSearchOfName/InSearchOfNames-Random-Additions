@@ -14,7 +14,8 @@ import org.mockbukkit.mockbukkit.MockBukkit;
 import org.mockbukkit.mockbukkit.ServerMock;
 import org.mockbukkit.mockbukkit.entity.PlayerMock;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class MenuTests {
     private ServerMock server;
@@ -35,13 +36,13 @@ public class MenuTests {
 
     @Test
     public void menuTestIfItOpensMenuInventoryWhenCallingTheCommand() {
-        server.dispatchCommand(player,"Menu");
+        server.dispatchCommand(player, "Menu");
         assertInstanceOf(MenuInventory.class, player.getOpenInventory().getTopInventory().getHolder());
     }
 
     @Test
-    public void menuTestIfYouCannotTakeOutOfMenuInventory(){
-        server.dispatchCommand(player,"Menu");
+    public void menuTestIfYouCannotTakeOutOfMenuInventory() {
+        server.dispatchCommand(player, "Menu");
         InventoryClickEvent clickEvent = new InventoryClickEvent(
                 player.getOpenInventory(),
                 InventoryType.SlotType.CONTAINER,
@@ -51,6 +52,6 @@ public class MenuTests {
         );
         Bukkit.getPluginManager().callEvent(clickEvent);
 
-        assertTrue(clickEvent.isCancelled(),"The click should be cancelled to prevent item pickup.");
+        assertTrue(clickEvent.isCancelled(), "The click should be cancelled to prevent item pickup.");
     }
 }
