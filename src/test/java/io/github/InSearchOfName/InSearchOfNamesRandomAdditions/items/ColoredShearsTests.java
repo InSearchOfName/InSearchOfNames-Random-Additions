@@ -161,6 +161,7 @@ public class ColoredShearsTests {
     @Test
     public void onShearShouldDropWoolMatchingShearsColor() {
         Sheep sheep = spawnSheep();
+        sheep.setColor(DyeColor.LIGHT_BLUE);
         ItemStack shears = createShearsInHand(); // pick non-white to ensure variety
         PlayerShearEntityEvent event = simulateShearEvent(sheep, shears);
 
