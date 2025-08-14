@@ -2,12 +2,14 @@ package io.github.InSearchOfName.inSearchOfNamesRandomAdditions.events;
 
 import io.github.InSearchOfName.inSearchOfNamesRandomAdditions.guis.MenuInventory;
 import io.github.InSearchOfName.inSearchOfNamesRandomAdditions.items.coloredShears.ColoredShears;
+import io.github.InSearchOfName.inSearchOfNamesRandomAdditions.items.sheepCannon.SheepCannon;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
 public class MenuInventoryClickEvent implements Listener {
@@ -23,16 +25,22 @@ public class MenuInventoryClickEvent implements Listener {
         event.setCancelled(true);
 
         ItemStack item = event.getCurrentItem();
-        if (item != null && item.hasItemMeta() && item.getItemMeta().getPersistentDataContainer().has(
-                ColoredShears.getShearColorKey(), PersistentDataType.INTEGER)) {
+        if (item != null && item.hasItemMeta() &&event.getWhoClicked() instanceof Player player) {
+            PersistentDataContainer pdc = item.getItemMeta().getPersistentDataContainer();
 
-            // Give the player a copy of the item
-            if (event.getWhoClicked() instanceof Player player) {
-                ItemStack shearsCopy = item.clone();
+            if (pdc.has(ColoredShears.getShearColorKey(), PersistentDataType.INTEGER)) {
+                ItemStack clone = item.clone();
 
-                player.getInventory().addItem(shearsCopy);
+                player.getInventory().addItem(clone);
                 player.sendMessage("You received Colored Shears!");
             }
+            if (pdc.has(SheepCannon.getKey(), PersistentDataType.BOOLEAN)) {
+                ItemStack clone = item.clone();
+
+                player.getInventory().addItem(clone);
+                player.sendMessage("You received Sheep Cannon!");
+            }
         }
+
     }
 }
