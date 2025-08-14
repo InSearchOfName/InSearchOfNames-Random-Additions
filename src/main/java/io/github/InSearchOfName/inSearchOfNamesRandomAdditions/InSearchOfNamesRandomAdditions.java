@@ -10,14 +10,6 @@ public class InSearchOfNamesRandomAdditions extends JavaPlugin {
     public static InSearchOfNamesRandomAdditions plugin;
     public static ConsoleCommandSender console;
 
-    public static InSearchOfNamesRandomAdditions getPlugin() {
-        return plugin;
-    }
-
-    public static ConsoleCommandSender getConsole() {
-        return console;
-    }
-
     @Override
     public void onEnable() {
         // Plugin startup logic
@@ -34,4 +26,13 @@ public class InSearchOfNamesRandomAdditions extends JavaPlugin {
         // Plugin shutdown logic
         console.sendMessage(Component.text("InSearchOfNames Random Additions Disabled"));
     }
+
+    public static InSearchOfNamesRandomAdditions getPlugin() {
+        return plugin;
+    }
+
+    public static ConsoleCommandSender getConsole() {
+        return console;
+    }
+
 }
