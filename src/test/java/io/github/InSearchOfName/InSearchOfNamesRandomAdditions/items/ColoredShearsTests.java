@@ -1,7 +1,7 @@
 package io.github.InSearchOfName.InSearchOfNamesRandomAdditions.items;
 
 import io.github.InSearchOfName.inSearchOfNamesRandomAdditions.InSearchOfNamesRandomAdditions;
-import io.github.InSearchOfName.inSearchOfNamesRandomAdditions.items.ColoredShears;
+import io.github.InSearchOfName.inSearchOfNamesRandomAdditions.items.coloredShears.ColoredShears;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
@@ -50,7 +50,7 @@ public class ColoredShearsTests {
     // Helper methods
     // ------------------------------------------------------------
     private ItemStack createShearsInHand() {
-        ItemStack shears = ColoredShears.createColoredShears();
+        ItemStack shears = ColoredShears.create();
         player.getInventory().setItemInMainHand(shears);
         player.openInventory(new InventoryMock(player, InventoryType.CRAFTING));
         return shears;
@@ -76,20 +76,20 @@ public class ColoredShearsTests {
     // ------------------------------------------------------------
     @Test
     public void createColoredShearsShouldNotBeNullAndHaveCorrectType() {
-        ItemStack shears = ColoredShears.createColoredShears();
+        ItemStack shears = ColoredShears.create();
         assertNotNull(shears);
         assertEquals(Material.SHEARS, shears.getType());
     }
 
     @Test
     public void createColoredShearsShouldHaveUnbreakingEnchantment() {
-        ItemStack shears = ColoredShears.createColoredShears();
+        ItemStack shears = ColoredShears.create();
         assertTrue(shears.getItemMeta().hasEnchant(org.bukkit.enchantments.Enchantment.UNBREAKING));
     }
 
     @Test
     public void createColoredShearsShouldHaveWhiteColorTag() {
-        ItemStack shears = ColoredShears.createColoredShears();
+        ItemStack shears = ColoredShears.create();
         Integer colorOrdinal = shears.getItemMeta()
                 .getPersistentDataContainer()
                 .get(ColoredShears.getShearColorKey(), PersistentDataType.INTEGER);

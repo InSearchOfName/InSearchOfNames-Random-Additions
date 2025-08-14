@@ -1,7 +1,8 @@
 package io.github.InSearchOfName.inSearchOfNamesRandomAdditions.guis;
 
 import io.github.InSearchOfName.inSearchOfNamesRandomAdditions.InSearchOfNamesRandomAdditions;
-import io.github.InSearchOfName.inSearchOfNamesRandomAdditions.items.ColoredShears;
+import io.github.InSearchOfName.inSearchOfNamesRandomAdditions.items.coloredShears.ColoredShears;
+import io.github.InSearchOfName.inSearchOfNamesRandomAdditions.items.sheepCannon.SheepCannon;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
@@ -25,7 +26,8 @@ public class MenuInventory implements InventoryHolder {
         for (int i = 45; i < 54; i++) {
             inventory.setItem(i, ItemStack.of(Material.GRAY_STAINED_GLASS_PANE));
         }
-        inventory.setItem(10, ColoredShears.createColoredShears());
+        inventory.setItem(10, ColoredShears.create());
+        inventory.setItem(11, SheepCannon.create());
     }
 
     @Override

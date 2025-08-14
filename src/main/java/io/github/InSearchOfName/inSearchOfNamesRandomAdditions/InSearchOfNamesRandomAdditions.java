@@ -34,4 +34,5 @@ public class InSearchOfNamesRandomAdditions extends JavaPlugin {
     public static ConsoleCommandSender getConsole() {
         return console;
     }
+
 }
