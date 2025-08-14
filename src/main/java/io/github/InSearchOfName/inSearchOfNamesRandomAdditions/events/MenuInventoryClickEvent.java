@@ -1,7 +1,7 @@
 package io.github.InSearchOfName.inSearchOfNamesRandomAdditions.events;
 
 import io.github.InSearchOfName.inSearchOfNamesRandomAdditions.guis.MenuInventory;
-import io.github.InSearchOfName.inSearchOfNamesRandomAdditions.items.ColoredShears;
+import io.github.InSearchOfName.inSearchOfNamesRandomAdditions.items.coloredShears.ColoredShears;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

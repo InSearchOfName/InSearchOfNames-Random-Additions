@@ -1,6 +1,6 @@
 package io.github.InSearchOfName.inSearchOfNamesRandomAdditions.events.coloredShears;
 
-import io.github.InSearchOfName.inSearchOfNamesRandomAdditions.items.ColoredShears;
+import io.github.InSearchOfName.inSearchOfNamesRandomAdditions.items.coloredShears.ColoredShears;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDropItemEvent;
