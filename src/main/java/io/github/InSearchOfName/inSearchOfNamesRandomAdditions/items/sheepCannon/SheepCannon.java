@@ -110,7 +110,7 @@ public class SheepCannon {
             if (velocityOrdinal != null && fireModeOrdinal != null) {
                 Velocity velocity = Velocity.values()[velocityOrdinal];
                 FireModes fireMode = FireModes.values()[fireModeOrdinal];
-                handleFire(player, item, fireMode, velocity);
+                handleFire(player, fireMode, velocity);
             }
         } else if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
             if (player.isSneaking()) {
@@ -124,21 +124,21 @@ public class SheepCannon {
     }
 
     // Handle shooting based on fire mode
-    public static void handleFire(Player player, ItemStack item, FireModes mode, Velocity velocity) {
+    public static void handleFire(Player player, FireModes mode, Velocity velocity) {
         switch (mode) {
 
             case SemiAutomatic -> shootSheep(player, velocity);
 
-            case Burst -> {
-                new BukkitRunnable() {
-                    int count = 0;
-                    @Override
-                    public void run() {
-                        shootSheep(player, velocity);
-                        if (++count >= 3) cancel();
-                    }
-                }.runTaskTimer(InSearchOfNamesRandomAdditions.getPlugin(), 0L, 5L); // 5 ticks between shots
-            }
+            case Burst -> new BukkitRunnable() {
+                int count = 0;
+
+                @Override
+                public void run() {
+                    shootSheep(player, velocity);
+                    if (++count >= 3) cancel();
+                }
+            }.runTaskTimer(InSearchOfNamesRandomAdditions.getPlugin(), 0L, 5L); // 5 ticks between shots
+
 
             case Automatic -> {
                 if (automaticPlayers.contains(player.getUniqueId())) return; // already firing
@@ -199,7 +199,7 @@ public class SheepCannon {
     // Check if player is holding a sheep cannon
     private static boolean isHoldingSheepCannon(Player player) {
         ItemStack mainHand = player.getInventory().getItemInMainHand();
-        if (mainHand == null || !mainHand.hasItemMeta()) return false;
+        if (!mainHand.hasItemMeta()) return false;
         return mainHand.getItemMeta().getPersistentDataContainer().has(
                 SheepCannon.getKey(), org.bukkit.persistence.PersistentDataType.BOOLEAN
         );

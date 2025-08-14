@@ -25,7 +25,7 @@ public class MenuInventoryClickEvent implements Listener {
         event.setCancelled(true);
 
         ItemStack item = event.getCurrentItem();
-        if (item != null && item.hasItemMeta() &&event.getWhoClicked() instanceof Player player) {
+        if (item != null && item.hasItemMeta() && event.getWhoClicked() instanceof Player player) {
             PersistentDataContainer pdc = item.getItemMeta().getPersistentDataContainer();
 
             if (pdc.has(ColoredShears.getShearColorKey(), PersistentDataType.INTEGER)) {

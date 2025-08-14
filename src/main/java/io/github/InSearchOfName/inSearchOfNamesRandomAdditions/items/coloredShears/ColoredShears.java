@@ -23,7 +23,7 @@ import org.bukkit.persistence.PersistentDataType;
 
 import java.util.*;
 
-public class ColoredShears  {
+public class ColoredShears {
     private static final NamespacedKey SHEAR_COLOR_KEY = new NamespacedKey(InSearchOfNamesRandomAdditions.getPlugin(), "color_shears");
     private static final Set<UUID> recentlySheared = new HashSet<>();
 
