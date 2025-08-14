@@ -7,8 +7,8 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class InSearchOfNamesRandomAdditions extends JavaPlugin {
-    public static InSearchOfNamesRandomAdditions plugin;
-    public static ConsoleCommandSender console;
+    private static InSearchOfNamesRandomAdditions plugin;
+    private static ConsoleCommandSender console;
 
     @Override
     public void onEnable() {
