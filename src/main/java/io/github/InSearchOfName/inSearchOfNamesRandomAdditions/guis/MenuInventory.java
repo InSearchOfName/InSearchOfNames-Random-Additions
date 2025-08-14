@@ -25,7 +25,7 @@ public class MenuInventory implements InventoryHolder {
         for (int i = 45; i < 54; i++) {
             inventory.setItem(i, ItemStack.of(Material.GRAY_STAINED_GLASS_PANE));
         }
-        inventory.setItem(10, ColoredShears.createColoredShears());
+        inventory.setItem(10, ColoredShears.create());
     }
 
     @Override

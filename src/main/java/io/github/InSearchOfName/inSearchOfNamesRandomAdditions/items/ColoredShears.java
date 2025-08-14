@@ -27,7 +27,7 @@ public class ColoredShears {
     private static final NamespacedKey SHEAR_COLOR_KEY = new NamespacedKey(InSearchOfNamesRandomAdditions.getPlugin(), "color_shears");
     private static final Set<UUID> recentlySheared = new HashSet<>();
 
-    public static ItemStack createColoredShears() {
+    public static ItemStack create() {
         ItemStack item = new ItemStack(Material.SHEARS);
         ItemMeta meta = item.getItemMeta();
 
