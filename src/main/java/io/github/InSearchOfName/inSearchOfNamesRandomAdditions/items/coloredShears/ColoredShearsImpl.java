@@ -12,25 +12,23 @@ import org.bukkit.entity.Sheep;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDropItemEvent;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerShearEntityEvent;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.InventoryView;
-import org.bukkit.inventory.ItemFlag;
-import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.*;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.util.*;
 
-public class ColoredShearsServiceImpl implements ColoredShearsService {
+public class ColoredShearsImpl implements ColoredShears {
     private final InSearchOfNamesRandomAdditions plugin;
     private final NamespacedKey SHEAR_COLOR_KEY;
     private final Set<UUID> recentlySheared = new HashSet<>();
 
     @Inject
-    public ColoredShearsServiceImpl(InSearchOfNamesRandomAdditions plugin) {
+    public ColoredShearsImpl(InSearchOfNamesRandomAdditions plugin) {
         this.plugin = plugin;
         this.SHEAR_COLOR_KEY = new NamespacedKey(plugin, "color_shears");
     }
@@ -92,6 +90,40 @@ public class ColoredShearsServiceImpl implements ColoredShearsService {
         item.setItemMeta(meta);
         updateMeta(item);
         player.getInventory().setItemInMainHand(item);
+    }
+
+    @Override
+    public ShapedRecipe getRecipe() {
+        ShapedRecipe recipe = new ShapedRecipe(SHEAR_COLOR_KEY, create());
+        // Layout (3x3)
+        recipe.shape("WWW",
+                "WSW",
+                "WWW");
+
+        // Shears in the middle
+        recipe.setIngredient('S', Material.SHEARS);
+
+        // Any wool color for W
+        RecipeChoice woolChoice = new RecipeChoice.MaterialChoice(
+                Material.WHITE_WOOL,
+                Material.ORANGE_WOOL,
+                Material.MAGENTA_WOOL,
+                Material.LIGHT_BLUE_WOOL,
+                Material.YELLOW_WOOL,
+                Material.LIME_WOOL,
+                Material.PINK_WOOL,
+                Material.GRAY_WOOL,
+                Material.LIGHT_GRAY_WOOL,
+                Material.CYAN_WOOL,
+                Material.PURPLE_WOOL,
+                Material.BLUE_WOOL,
+                Material.BROWN_WOOL,
+                Material.GREEN_WOOL,
+                Material.RED_WOOL,
+                Material.BLACK_WOOL
+        );
+        recipe.setIngredient('W', woolChoice);
+        return recipe;
     }
 
     private void updateMeta(ItemStack item) {
@@ -156,6 +188,33 @@ public class ColoredShearsServiceImpl implements ColoredShearsService {
                     recentlySheared.remove(sheep.getUniqueId()), 1L
             );
         }
+    }
+
+    @Override
+    public void onCraft(PrepareItemCraftEvent event) {
+        Recipe recipe = event.getRecipe();
+        if (recipe == null) return;
+
+        // Only check if it's our Colored Shears recipe
+        if (!(recipe.getResult().isSimilar(create()))) return;
+
+        ItemStack[] matrix = event.getInventory().getMatrix();
+        Set<Material> foundWools = new HashSet<>();
+
+        for (int i = 0; i < matrix.length; i++) {
+            if (i == 4) continue; // Skip center slot (shears)
+            ItemStack item = matrix[i];
+            if (item == null) return; // Not fully filled yet
+            if (!item.getType().name().endsWith("_WOOL")) {
+                event.getInventory().setResult(null); // Wrong ingredient
+                return;
+            }
+            if (!foundWools.add(item.getType())) {
+                event.getInventory().setResult(null); // Duplicate wool
+                return;
+            }
+        }
+
     }
 
     @Override

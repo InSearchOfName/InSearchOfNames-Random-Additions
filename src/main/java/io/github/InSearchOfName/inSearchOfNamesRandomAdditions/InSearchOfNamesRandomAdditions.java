@@ -4,6 +4,7 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import io.github.InSearchOfName.inSearchOfNamesRandomAdditions.commands.CommandManager;
 import io.github.InSearchOfName.inSearchOfNamesRandomAdditions.events.EventManager;
+import io.github.InSearchOfName.inSearchOfNamesRandomAdditions.items.ItemManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -21,6 +22,7 @@ public class InSearchOfNamesRandomAdditions extends JavaPlugin {
         // Use DI to construct and register components
         injector.getInstance(CommandManager.class).registerCommands();
         injector.getInstance(EventManager.class).registerEvents();
+        injector.getInstance(ItemManager.class).registerItems();
         console.sendMessage(Component.text("InSearchOfNames Random Additions Enabled"));
     }
 

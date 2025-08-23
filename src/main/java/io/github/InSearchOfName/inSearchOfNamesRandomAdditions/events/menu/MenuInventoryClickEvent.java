@@ -2,8 +2,8 @@ package io.github.InSearchOfName.inSearchOfNamesRandomAdditions.events.menu;
 
 import com.google.inject.Inject;
 import io.github.InSearchOfName.inSearchOfNamesRandomAdditions.guis.MenuInventory;
-import io.github.InSearchOfName.inSearchOfNamesRandomAdditions.items.coloredShears.ColoredShearsService;
-import io.github.InSearchOfName.inSearchOfNamesRandomAdditions.items.sheepCannon.SheepCannonService;
+import io.github.InSearchOfName.inSearchOfNamesRandomAdditions.items.coloredShears.ColoredShears;
+import io.github.InSearchOfName.inSearchOfNamesRandomAdditions.items.sheepCannon.SheepCannon;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -14,13 +14,13 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
 public class MenuInventoryClickEvent implements Listener {
-    private final ColoredShearsService coloredShearsService;
-    private final SheepCannonService sheepCannonService;
+    private final ColoredShears coloredShears;
+    private final SheepCannon sheepCannon;
 
     @Inject
-    public MenuInventoryClickEvent(ColoredShearsService coloredShearsService, SheepCannonService sheepCannonService) {
-        this.coloredShearsService = coloredShearsService;
-        this.sheepCannonService = sheepCannonService;
+    public MenuInventoryClickEvent(ColoredShears coloredShears, SheepCannon sheepCannon) {
+        this.coloredShears = coloredShears;
+        this.sheepCannon = sheepCannon;
     }
 
     @EventHandler
@@ -37,13 +37,13 @@ public class MenuInventoryClickEvent implements Listener {
         if (item != null && item.hasItemMeta() && event.getWhoClicked() instanceof Player player) {
             PersistentDataContainer pdc = item.getItemMeta().getPersistentDataContainer();
 
-            if (pdc.has(coloredShearsService.getShearColorKey(), PersistentDataType.INTEGER)) {
+            if (pdc.has(coloredShears.getShearColorKey(), PersistentDataType.INTEGER)) {
                 ItemStack clone = item.clone();
 
                 player.getInventory().addItem(clone);
                 player.sendMessage("You received Colored Shears!");
             }
-            if (pdc.has(sheepCannonService.getKey(), PersistentDataType.BOOLEAN)) {
+            if (pdc.has(sheepCannon.getKey(), PersistentDataType.BOOLEAN)) {
                 ItemStack clone = item.clone();
 
                 player.getInventory().addItem(clone);

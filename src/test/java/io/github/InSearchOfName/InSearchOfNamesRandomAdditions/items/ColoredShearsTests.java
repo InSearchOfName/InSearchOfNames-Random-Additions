@@ -3,7 +3,7 @@ package io.github.InSearchOfName.InSearchOfNamesRandomAdditions.items;
 import com.google.inject.Injector;
 import io.github.InSearchOfName.InSearchOfNamesRandomAdditions.TestHelper;
 import io.github.InSearchOfName.inSearchOfNamesRandomAdditions.InSearchOfNamesRandomAdditions;
-import io.github.InSearchOfName.inSearchOfNamesRandomAdditions.items.coloredShears.ColoredShearsServiceImpl;
+import io.github.InSearchOfName.inSearchOfNamesRandomAdditions.items.coloredShears.ColoredShearsImpl;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
@@ -35,7 +35,7 @@ public class ColoredShearsTests {
     private ServerMock server;
     private PlayerMock player;
     private InSearchOfNamesRandomAdditions plugin;
-    private ColoredShearsServiceImpl coloredShearsService;
+    private ColoredShearsImpl coloredShearsService;
 
     @BeforeEach
     public void setup() {
@@ -44,7 +44,7 @@ public class ColoredShearsTests {
         plugin = helper.plugin();
         player = helper.newPlayer();
         Injector injector = helper.injector();
-        coloredShearsService = injector.getInstance(ColoredShearsServiceImpl.class);
+        coloredShearsService = injector.getInstance(ColoredShearsImpl.class);
     }
 
     @AfterEach
