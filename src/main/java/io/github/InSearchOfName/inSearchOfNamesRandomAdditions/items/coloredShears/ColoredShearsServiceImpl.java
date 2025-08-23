@@ -1,5 +1,6 @@
 package io.github.InSearchOfName.inSearchOfNamesRandomAdditions.items.coloredShears;
 
+import com.google.inject.Inject;
 import io.github.InSearchOfName.inSearchOfNamesRandomAdditions.InSearchOfNamesRandomAdditions;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
@@ -23,11 +24,19 @@ import org.bukkit.persistence.PersistentDataType;
 
 import java.util.*;
 
-public class ColoredShears {
-    private static final NamespacedKey SHEAR_COLOR_KEY = new NamespacedKey(InSearchOfNamesRandomAdditions.getPlugin(), "color_shears");
-    private static final Set<UUID> recentlySheared = new HashSet<>();
+public class ColoredShearsServiceImpl implements ColoredShearsService {
+    private final InSearchOfNamesRandomAdditions plugin;
+    private final NamespacedKey SHEAR_COLOR_KEY;
+    private final Set<UUID> recentlySheared = new HashSet<>();
 
-    public static ItemStack create() {
+    @Inject
+    public ColoredShearsServiceImpl(InSearchOfNamesRandomAdditions plugin) {
+        this.plugin = plugin;
+        this.SHEAR_COLOR_KEY = new NamespacedKey(plugin, "color_shears");
+    }
+
+    @Override
+    public ItemStack create() {
         ItemStack item = new ItemStack(Material.SHEARS);
         ItemMeta meta = item.getItemMeta();
 
@@ -41,7 +50,8 @@ public class ColoredShears {
         return item;
     }
 
-    public static void changeColorOfShears(PlayerInteractEvent event) {
+    @Override
+    public void changeColorOfShears(PlayerInteractEvent event) {
         Boolean rightClick = null;
         if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
             rightClick = true;
@@ -54,9 +64,8 @@ public class ColoredShears {
         InventoryView openInv = player.getOpenInventory();
         Inventory topInv = openInv.getTopInventory();
 
-        // Only proceed if player has no GUI open (meaning top inventory is the player's own inventory)
         if (!(topInv.getType() == InventoryType.CRAFTING && topInv.getHolder() instanceof Player)) {
-            return; // Some GUI is open, ignore event
+            return;
         }
 
         ItemStack item = player.getInventory().getItemInMainHand();
@@ -85,8 +94,7 @@ public class ColoredShears {
         player.getInventory().setItemInMainHand(item);
     }
 
-
-    private static void updateMeta(ItemStack item) {
+    private void updateMeta(ItemStack item) {
         if (item == null || !item.hasItemMeta()) return;
 
         ItemMeta meta = item.getItemMeta();
@@ -99,7 +107,6 @@ public class ColoredShears {
 
         DyeColor color = DyeColor.values()[ordinal];
 
-        // Create a lore line with the selected color
         List<Component> lore = new ArrayList<>();
         lore.add(Component.text("When shearing a sheep no matter the color of the wool,").color(TextColor.color(0, 170, 170)));
         lore.add(Component.text("it will change into the color of the Colored Shears.").color(TextColor.color(0, 170, 170)));
@@ -112,14 +119,12 @@ public class ColoredShears {
         lore.add(Component.text("Right-Click: Next Color").decorate(TextDecoration.BOLD).color(TextColor.color(255, 170, 0)));
         lore.add(Component.text("Left-Click: Previous Color").decorate(TextDecoration.BOLD).color(TextColor.color(255, 170, 0)));
 
-        // Set the lore
         meta.lore(lore);
-
-        // Save the updated meta back to the item
         item.setItemMeta(meta);
     }
 
-    public static void onShear(PlayerShearEntityEvent event) {
+    @Override
+    public void onShear(PlayerShearEntityEvent event) {
         if (!(event.getEntity() instanceof Sheep sheep)) return;
 
         ItemStack item = event.getPlayer().getInventory().getItemInMainHand();
@@ -132,10 +137,7 @@ public class ColoredShears {
         if (!pdc.has(SHEAR_COLOR_KEY, PersistentDataType.INTEGER)) return;
 
         event.setCancelled(true);
-
-        // Mark this sheep so we can block the vanilla drop
         recentlySheared.add(sheep.getUniqueId());
-
         sheep.shear();
 
         int amount = new Random().nextInt(3) + 1;
@@ -144,20 +146,20 @@ public class ColoredShears {
         sheep.getWorld().dropItemNaturally(sheep.getLocation(), wool);
     }
 
-    public static void preventNaturallyDroppedWool(EntityDropItemEvent event) {
+    @Override
+    public void preventNaturallyDroppedWool(EntityDropItemEvent event) {
         if (!(event.getEntity() instanceof Sheep sheep)) return;
 
         if (recentlySheared.contains(sheep.getUniqueId())) {
             event.setCancelled(true);
-            Bukkit.getScheduler().runTaskLater(InSearchOfNamesRandomAdditions.getPlugin(), () ->
+            Bukkit.getScheduler().runTaskLater(plugin, () ->
                     recentlySheared.remove(sheep.getUniqueId()), 1L
             );
         }
-
-
     }
 
-    public static DyeColor getColorOfShears(ItemStack item) {
+    @Override
+    public DyeColor getColorOfShears(ItemStack item) {
         if (item == null || !item.hasItemMeta()) return null;
 
         ItemMeta meta = item.getItemMeta();
@@ -173,11 +175,13 @@ public class ColoredShears {
         return DyeColor.values()[ordinal];
     }
 
-    public static NamespacedKey getShearColorKey() {
+    @Override
+    public NamespacedKey getShearColorKey() {
         return SHEAR_COLOR_KEY;
     }
 
-    public static Set<UUID> getRecentlySheared() {
+    @Override
+    public Set<UUID> getRecentlySheared() {
         return recentlySheared;
     }
 }

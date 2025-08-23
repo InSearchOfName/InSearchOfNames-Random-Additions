@@ -1,5 +1,6 @@
 package io.github.InSearchOfName.inSearchOfNamesRandomAdditions.items.sheepCannon;
 
+import com.google.inject.Inject;
 import io.github.InSearchOfName.inSearchOfNamesRandomAdditions.InSearchOfNamesRandomAdditions;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
@@ -27,15 +28,25 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-public class SheepCannon {
-    private static final NamespacedKey FIRE_MODE_KEY = new NamespacedKey(InSearchOfNamesRandomAdditions.getPlugin(), "fire_mode");
-    private static final NamespacedKey SHEEP_CANNON_KEY = new NamespacedKey(InSearchOfNamesRandomAdditions.getPlugin(), "sheep_cannon");
-    private static final NamespacedKey VELOCITY_KEY = new NamespacedKey(InSearchOfNamesRandomAdditions.getPlugin(), "velocity");
+public class SheepCannonServiceImpl implements SheepCannonService {
+    private final InSearchOfNamesRandomAdditions plugin;
+    private final NamespacedKey FIRE_MODE_KEY;
+    private final NamespacedKey SHEEP_CANNON_KEY;
+    private final NamespacedKey VELOCITY_KEY;
 
-    private static final Set<UUID> recentlyShotSheep = new HashSet<>();
-    private static final Set<UUID> automaticPlayers = new HashSet<>();
+    private final Set<UUID> recentlyShotSheep = new HashSet<>();
+    private final Set<UUID> automaticPlayers = new HashSet<>();
 
-    public static ItemStack create() {
+    @Inject
+    public SheepCannonServiceImpl(InSearchOfNamesRandomAdditions plugin) {
+        this.plugin = plugin;
+        this.FIRE_MODE_KEY = new NamespacedKey(plugin, "fire_mode");
+        this.SHEEP_CANNON_KEY = new NamespacedKey(plugin, "sheep_cannon");
+        this.VELOCITY_KEY = new NamespacedKey(plugin, "velocity");
+    }
+
+    @Override
+    public ItemStack create() {
         ItemStack item = new ItemStack(Material.STICK);
         ItemMeta meta = item.getItemMeta();
 
@@ -52,7 +63,7 @@ public class SheepCannon {
         return item;
     }
 
-    private static void updateMeta(ItemStack item) {
+    private void updateMeta(ItemStack item) {
         if (item == null || !item.hasItemMeta()) return;
 
         ItemMeta meta = item.getItemMeta();
@@ -85,14 +96,14 @@ public class SheepCannon {
         item.setItemMeta(meta);
     }
 
-    public static void onClick(@NotNull PlayerInteractEvent event) {
+    @Override
+    public void onClick(@NotNull PlayerInteractEvent event) {
         Player player = event.getPlayer();
         InventoryView openInv = player.getOpenInventory();
         Inventory topInv = openInv.getTopInventory();
 
-        // Only proceed if player has no GUI open (meaning top inventory is the player's own inventory)
         if (!(topInv.getType() == InventoryType.CRAFTING && topInv.getHolder() instanceof Player)) {
-            return; // Some GUI is open, ignore event
+            return;
         }
 
         ItemStack item = player.getInventory().getItemInMainHand();
@@ -123,8 +134,8 @@ public class SheepCannon {
 
     }
 
-    // Handle shooting based on fire mode
-    public static void handleFire(Player player, FireModes mode, Velocity velocity) {
+    @Override
+    public void handleFire(Player player, FireModes mode, Velocity velocity) {
         switch (mode) {
 
             case SemiAutomatic -> shootSheep(player, velocity);
@@ -137,11 +148,11 @@ public class SheepCannon {
                     shootSheep(player, velocity);
                     if (++count >= 3) cancel();
                 }
-            }.runTaskTimer(InSearchOfNamesRandomAdditions.getPlugin(), 0L, 5L); // 5 ticks between shots
+            }.runTaskTimer(plugin, 0L, 5L);
 
 
             case Automatic -> {
-                if (automaticPlayers.contains(player.getUniqueId())) return; // already firing
+                if (automaticPlayers.contains(player.getUniqueId())) return;
 
                 automaticPlayers.add(player.getUniqueId());
 
@@ -155,21 +166,20 @@ public class SheepCannon {
                         }
                         shootSheep(player, velocity);
                     }
-                }.runTaskTimer(InSearchOfNamesRandomAdditions.getPlugin(), 0L, 4L); // every 4 ticks (~5 shots/sec)
+                }.runTaskTimer(plugin, 0L, 4L);
             }
         }
     }
 
-    // Spawn and shoot a rainbow sheep
-    public static void shootSheep(Player player, Velocity velocity) {
+    @Override
+    public void shootSheep(Player player, Velocity velocity) {
         Sheep sheep = player.getWorld().spawn(player.getEyeLocation(), Sheep.class, s -> {
-            s.customName(Component.text("jeb_")); // rainbow sheep
+            s.customName(Component.text("jeb_"));
             s.setCustomNameVisible(false);
             s.setInvulnerable(true);
             s.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, 800, 0));
         });
 
-        // Launch the sheep
         sheep.setVelocity(player.getLocation().getDirection().normalize()
                 .multiply(velocity.getMultiplier()));
 
@@ -177,7 +187,6 @@ public class SheepCannon {
 
         player.getWorld().playSound(player.getLocation(), Sound.ENTITY_SHEEP_AMBIENT, 1f, 1f);
 
-        // Make it explode on block collision
         new BukkitRunnable() {
             @Override
             public void run() {
@@ -193,19 +202,18 @@ public class SheepCannon {
                     recentlyShotSheep.remove(sheep.getUniqueId());
                 }
             }
-        }.runTaskTimer(InSearchOfNamesRandomAdditions.getPlugin(), 1L, 1L);
+        }.runTaskTimer(plugin, 1L, 1L);
     }
 
-    // Check if player is holding a sheep cannon
-    private static boolean isHoldingSheepCannon(Player player) {
+    private boolean isHoldingSheepCannon(Player player) {
         ItemStack mainHand = player.getInventory().getItemInMainHand();
         if (!mainHand.hasItemMeta()) return false;
         return mainHand.getItemMeta().getPersistentDataContainer().has(
-                SheepCannon.getKey(), org.bukkit.persistence.PersistentDataType.BOOLEAN
+                getKey(), org.bukkit.persistence.PersistentDataType.BOOLEAN
         );
     }
 
-    private static void changeFireMode(ItemStack item, Player player) {
+    private void changeFireMode(ItemStack item, Player player) {
         ItemMeta meta = item.getItemMeta();
         PersistentDataContainer pdc = meta.getPersistentDataContainer();
 
@@ -219,7 +227,7 @@ public class SheepCannon {
         player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1.0f, 2.0f);
     }
 
-    private static void changeVelocity(ItemStack item, Player player) {
+    private void changeVelocity(ItemStack item, Player player) {
         ItemMeta meta = item.getItemMeta();
         PersistentDataContainer pdc = meta.getPersistentDataContainer();
 
@@ -233,7 +241,8 @@ public class SheepCannon {
         player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1.0f, 0.5f);
     }
 
-    public static NamespacedKey getKey() {
+    @Override
+    public NamespacedKey getKey() {
         return SHEEP_CANNON_KEY;
     }
 }

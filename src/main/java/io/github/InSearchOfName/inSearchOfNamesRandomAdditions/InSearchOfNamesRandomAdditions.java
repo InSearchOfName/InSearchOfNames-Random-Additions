@@ -10,18 +10,17 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class InSearchOfNamesRandomAdditions extends JavaPlugin {
     private Injector injector;
-    private static InSearchOfNamesRandomAdditions plugin;
-    private static ConsoleCommandSender console;
+    private ConsoleCommandSender console;
 
     @Override
     public void onEnable() {
         // Plugin startup logic
         injector = Guice.createInjector(new PluginModule(this));
-        plugin = this;
-        console = plugin.getServer().getConsoleSender();
+        console = getServer().getConsoleSender();
 
-        new CommandManager().registerCommands();
-        new EventManager().registerEvents();
+        // Use DI to construct and register components
+        injector.getInstance(CommandManager.class).registerCommands();
+        injector.getInstance(EventManager.class).registerEvents();
         console.sendMessage(Component.text("InSearchOfNames Random Additions Enabled"));
     }
 
@@ -31,12 +30,8 @@ public class InSearchOfNamesRandomAdditions extends JavaPlugin {
         console.sendMessage(Component.text("InSearchOfNames Random Additions Disabled"));
     }
 
-    public static InSearchOfNamesRandomAdditions getPlugin() {
-        return plugin;
-    }
-
-    public static ConsoleCommandSender getConsole() {
-        return console;
+    public Injector getInjector() {
+        return injector;
     }
 
 }
