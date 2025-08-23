@@ -1,8 +1,9 @@
 package io.github.InSearchOfName.inSearchOfNamesRandomAdditions.guis;
 
+import com.google.inject.Inject;
 import io.github.InSearchOfName.inSearchOfNamesRandomAdditions.InSearchOfNamesRandomAdditions;
-import io.github.InSearchOfName.inSearchOfNamesRandomAdditions.items.coloredShears.ColoredShears;
-import io.github.InSearchOfName.inSearchOfNamesRandomAdditions.items.sheepCannon.SheepCannon;
+import io.github.InSearchOfName.inSearchOfNamesRandomAdditions.items.coloredShears.ColoredShearsService;
+import io.github.InSearchOfName.inSearchOfNamesRandomAdditions.items.sheepCannon.SheepCannonService;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
@@ -12,10 +13,20 @@ import org.jetbrains.annotations.NotNull;
 
 public class MenuInventory implements InventoryHolder {
     private final Inventory inventory;
+    private final InSearchOfNamesRandomAdditions plugin;
+    private final ColoredShearsService coloredShearsService;
+    private final SheepCannonService sheepCannonService;
 
-    public MenuInventory(InSearchOfNamesRandomAdditions plugin) {
+    @Inject
+    public MenuInventory(InSearchOfNamesRandomAdditions plugin, ColoredShearsService coloredShearsService, SheepCannonService sheepCannonService) {
+        this.coloredShearsService = coloredShearsService;
+        this.sheepCannonService = sheepCannonService;
+        this.plugin = plugin;
         inventory = plugin.getServer().createInventory(this, 54, Component.text("Menu Inventory"));
+        createInventory();
+    }
 
+    private void createInventory() {
         for (int i = 0; i < 9; i++) {
             inventory.setItem(i, ItemStack.of(Material.GRAY_STAINED_GLASS_PANE));
         }
@@ -26,8 +37,8 @@ public class MenuInventory implements InventoryHolder {
         for (int i = 45; i < 54; i++) {
             inventory.setItem(i, ItemStack.of(Material.GRAY_STAINED_GLASS_PANE));
         }
-        inventory.setItem(10, ColoredShears.create());
-        inventory.setItem(11, SheepCannon.create());
+        inventory.setItem(10, coloredShearsService.create());
+        inventory.setItem(11, sheepCannonService.create());
     }
 
     @Override

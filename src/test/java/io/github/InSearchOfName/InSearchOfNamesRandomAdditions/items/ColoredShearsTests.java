@@ -1,7 +1,9 @@
 package io.github.InSearchOfName.InSearchOfNamesRandomAdditions.items;
 
+import com.google.inject.Injector;
+import io.github.InSearchOfName.InSearchOfNamesRandomAdditions.TestHelper;
 import io.github.InSearchOfName.inSearchOfNamesRandomAdditions.InSearchOfNamesRandomAdditions;
-import io.github.InSearchOfName.inSearchOfNamesRandomAdditions.items.coloredShears.ColoredShears;
+import io.github.InSearchOfName.inSearchOfNamesRandomAdditions.items.coloredShears.ColoredShearsServiceImpl;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
@@ -18,7 +20,6 @@ import org.bukkit.persistence.PersistentDataType;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockbukkit.mockbukkit.MockBukkit;
 import org.mockbukkit.mockbukkit.ServerMock;
 import org.mockbukkit.mockbukkit.entity.PlayerMock;
 import org.mockbukkit.mockbukkit.inventory.InventoryMock;
@@ -30,27 +31,30 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class ColoredShearsTests {
 
+    private TestHelper helper;
     private ServerMock server;
     private PlayerMock player;
     private InSearchOfNamesRandomAdditions plugin;
+    private ColoredShearsServiceImpl coloredShearsService;
 
     @BeforeEach
     public void setup() {
-        server = MockBukkit.mock();
-        plugin = MockBukkit.load(InSearchOfNamesRandomAdditions.class);
-        player = server.addPlayer();
+        helper = TestHelper.start();
+        server = helper.server();
+        plugin = helper.plugin();
+        player = helper.newPlayer();
+        Injector injector = helper.injector();
+        coloredShearsService = injector.getInstance(ColoredShearsServiceImpl.class);
     }
 
     @AfterEach
-    public void tearDown() {
-        MockBukkit.unmock();
-    }
+    public void tearDown() { helper.close(); }
 
     // ------------------------------------------------------------
     // Helper methods
     // ------------------------------------------------------------
     private ItemStack createShearsInHand() {
-        ItemStack shears = ColoredShears.create();
+        ItemStack shears = coloredShearsService.create();
         player.getInventory().setItemInMainHand(shears);
         player.openInventory(new InventoryMock(player, InventoryType.CRAFTING));
         return shears;
@@ -76,39 +80,39 @@ public class ColoredShearsTests {
     // ------------------------------------------------------------
     @Test
     public void createColoredShearsShouldNotBeNullAndHaveCorrectType() {
-        ItemStack shears = ColoredShears.create();
+    ItemStack shears = coloredShearsService.create();
         assertNotNull(shears);
         assertEquals(Material.SHEARS, shears.getType());
     }
 
     @Test
     public void createColoredShearsShouldHaveUnbreakingEnchantment() {
-        ItemStack shears = ColoredShears.create();
+    ItemStack shears = coloredShearsService.create();
         assertTrue(shears.getItemMeta().hasEnchant(org.bukkit.enchantments.Enchantment.UNBREAKING));
     }
 
     @Test
     public void createColoredShearsShouldHaveWhiteColorTag() {
-        ItemStack shears = ColoredShears.create();
+    ItemStack shears = coloredShearsService.create();
         Integer colorOrdinal = shears.getItemMeta()
                 .getPersistentDataContainer()
-                .get(ColoredShears.getShearColorKey(), PersistentDataType.INTEGER);
+        .get(coloredShearsService.getShearColorKey(), PersistentDataType.INTEGER);
         assertEquals(DyeColor.WHITE.ordinal(), colorOrdinal);
     }
 
     // ------------------------------------------------------------
-    // Tests for changeColorOfShears
+    // Tests for onClick
     // ------------------------------------------------------------
     @Test
     public void rightClickShouldIncrementShearsColor() {
         ItemStack shears = createShearsInHand();
         PlayerInteractEvent event = new PlayerInteractEvent(player, Action.RIGHT_CLICK_AIR, shears, null, BlockFace.EAST);
-        ColoredShears.changeColorOfShears(event);
+    coloredShearsService.onClick(event);
 
         int expected = (DyeColor.WHITE.ordinal() + 1) % DyeColor.values().length;
         int actual = player.getItemInHand().getItemMeta()
                 .getPersistentDataContainer()
-                .get(ColoredShears.getShearColorKey(), PersistentDataType.INTEGER);
+                .get(coloredShearsService.getShearColorKey(), PersistentDataType.INTEGER);
         assertEquals(expected, actual);
     }
 
@@ -116,12 +120,12 @@ public class ColoredShearsTests {
     public void leftClickShouldDecrementShearsColor() {
         ItemStack shears = createShearsInHand();
         PlayerInteractEvent event = new PlayerInteractEvent(player, Action.LEFT_CLICK_AIR, shears, null, BlockFace.EAST);
-        ColoredShears.changeColorOfShears(event);
+    coloredShearsService.onClick(event);
 
         int expected = (DyeColor.WHITE.ordinal() - 1 + DyeColor.values().length) % DyeColor.values().length;
         int actual = player.getItemInHand().getItemMeta()
                 .getPersistentDataContainer()
-                .get(ColoredShears.getShearColorKey(), PersistentDataType.INTEGER);
+                .get(coloredShearsService.getShearColorKey(), PersistentDataType.INTEGER);
         assertEquals(expected, actual);
     }
 
@@ -134,7 +138,7 @@ public class ColoredShearsTests {
         ItemStack shears = createShearsInHand();
         PlayerShearEntityEvent event = simulateShearEvent(sheep, shears);
 
-        ColoredShears.onShear(event);
+    coloredShearsService.onShear(event);
         assertTrue(event.isCancelled());
     }
 
@@ -144,7 +148,7 @@ public class ColoredShearsTests {
         ItemStack shears = createShearsInHand();
         PlayerShearEntityEvent event = simulateShearEvent(sheep, shears);
 
-        ColoredShears.onShear(event);
+    coloredShearsService.onShear(event);
         assertTrue(sheep.isSheared());
     }
 
@@ -154,8 +158,8 @@ public class ColoredShearsTests {
         ItemStack shears = createShearsInHand();
         PlayerShearEntityEvent event = simulateShearEvent(sheep, shears);
 
-        ColoredShears.onShear(event);
-        assertTrue(ColoredShears.getRecentlySheared().contains(sheep.getUniqueId()));
+    coloredShearsService.onShear(event);
+    assertTrue(coloredShearsService.getRecentlySheared().contains(sheep.getUniqueId()));
     }
 
     @Test
@@ -165,9 +169,9 @@ public class ColoredShearsTests {
         ItemStack shears = createShearsInHand(); // pick non-white to ensure variety
         PlayerShearEntityEvent event = simulateShearEvent(sheep, shears);
 
-        ColoredShears.onShear(event);
+    coloredShearsService.onShear(event);
 
-        String expectedColor = ColoredShears.getColorOfShears(shears).toString();
+    String expectedColor = coloredShearsService.getColorOfShears(shears).toString();
         boolean woolDropped = server.getWorlds().getFirst()
                 .getEntitiesByClass(Item.class)
                 .stream()
@@ -182,22 +186,22 @@ public class ColoredShearsTests {
     @Test
     public void preventNaturallyDroppedWoolShouldCancelEvent() {
         Sheep sheep = spawnSheep();
-        ColoredShears.getRecentlySheared().add(sheep.getUniqueId());
+    coloredShearsService.getRecentlySheared().add(sheep.getUniqueId());
         EntityDropItemEvent event = simulateDropEvent(sheep);
 
-        ColoredShears.preventNaturallyDroppedWool(event);
+    coloredShearsService.preventNaturallyDroppedWool(event);
         assertTrue(event.isCancelled());
     }
 
     @Test
     public void preventNaturallyDroppedWoolShouldClearRecentlyShearedAfterTick() {
         Sheep sheep = spawnSheep();
-        ColoredShears.getRecentlySheared().add(sheep.getUniqueId());
+    coloredShearsService.getRecentlySheared().add(sheep.getUniqueId());
         EntityDropItemEvent event = simulateDropEvent(sheep);
 
-        ColoredShears.preventNaturallyDroppedWool(event);
+    coloredShearsService.preventNaturallyDroppedWool(event);
         server.getScheduler().performTicks(1);
 
-        assertFalse(ColoredShears.getRecentlySheared().contains(sheep.getUniqueId()));
+    assertFalse(coloredShearsService.getRecentlySheared().contains(sheep.getUniqueId()));
     }
 }

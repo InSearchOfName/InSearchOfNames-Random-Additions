@@ -1,14 +1,21 @@
 package io.github.InSearchOfName.inSearchOfNamesRandomAdditions.events.coloredShears;
 
-import io.github.InSearchOfName.inSearchOfNamesRandomAdditions.items.coloredShears.ColoredShears;
+import com.google.inject.Inject;
+import io.github.InSearchOfName.inSearchOfNamesRandomAdditions.items.coloredShears.ColoredShearsService;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerShearEntityEvent;
 
 public class ColoredShearsShearEvent implements Listener {
+    private final ColoredShearsService service;
+
+    @Inject
+    public ColoredShearsShearEvent(ColoredShearsService service) {
+        this.service = service;
+    }
 
     @EventHandler
     public void onShear(PlayerShearEntityEvent event) {
-        ColoredShears.onShear(event);
+        service.onShear(event);
     }
 }

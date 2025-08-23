@@ -1,5 +1,7 @@
 package io.github.InSearchOfName.inSearchOfNamesRandomAdditions;
 
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 import io.github.InSearchOfName.inSearchOfNamesRandomAdditions.commands.CommandManager;
 import io.github.InSearchOfName.inSearchOfNamesRandomAdditions.events.EventManager;
 import net.kyori.adventure.text.Component;
@@ -7,17 +9,18 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class InSearchOfNamesRandomAdditions extends JavaPlugin {
-    private static InSearchOfNamesRandomAdditions plugin;
-    private static ConsoleCommandSender console;
+    private Injector injector;
+    private ConsoleCommandSender console;
 
     @Override
     public void onEnable() {
         // Plugin startup logic
-        plugin = this;
-        console = plugin.getServer().getConsoleSender();
+        injector = Guice.createInjector(new PluginModule(this));
+        console = getServer().getConsoleSender();
 
-        new CommandManager().registerCommands();
-        new EventManager().registerEvents();
+        // Use DI to construct and register components
+        injector.getInstance(CommandManager.class).registerCommands();
+        injector.getInstance(EventManager.class).registerEvents();
         console.sendMessage(Component.text("InSearchOfNames Random Additions Enabled"));
     }
 
@@ -27,12 +30,8 @@ public class InSearchOfNamesRandomAdditions extends JavaPlugin {
         console.sendMessage(Component.text("InSearchOfNames Random Additions Disabled"));
     }
 
-    public static InSearchOfNamesRandomAdditions getPlugin() {
-        return plugin;
-    }
-
-    public static ConsoleCommandSender getConsole() {
-        return console;
+    public Injector getInjector() {
+        return injector;
     }
 
 }
