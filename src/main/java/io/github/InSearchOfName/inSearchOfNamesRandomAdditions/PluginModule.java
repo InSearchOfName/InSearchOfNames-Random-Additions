@@ -3,7 +3,7 @@ package io.github.InSearchOfName.inSearchOfNamesRandomAdditions;
 import com.google.inject.AbstractModule;
 import io.github.InSearchOfName.inSearchOfNamesRandomAdditions.commands.CommandManager;
 import io.github.InSearchOfName.inSearchOfNamesRandomAdditions.commands.Menu;
-import io.github.InSearchOfName.inSearchOfNamesRandomAdditions.events.MenuInventoryClickEvent;
+import io.github.InSearchOfName.inSearchOfNamesRandomAdditions.events.menu.MenuInventoryClickEvent;
 import io.github.InSearchOfName.inSearchOfNamesRandomAdditions.events.coloredShears.ColoredShearsClickEvent;
 import io.github.InSearchOfName.inSearchOfNamesRandomAdditions.events.coloredShears.ColoredShearsItemDropEvent;
 import io.github.InSearchOfName.inSearchOfNamesRandomAdditions.events.coloredShears.ColoredShearsShearEvent;

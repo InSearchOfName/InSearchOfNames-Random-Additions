@@ -5,6 +5,7 @@ import io.github.InSearchOfName.inSearchOfNamesRandomAdditions.InSearchOfNamesRa
 import io.github.InSearchOfName.inSearchOfNamesRandomAdditions.events.coloredShears.ColoredShearsClickEvent;
 import io.github.InSearchOfName.inSearchOfNamesRandomAdditions.events.coloredShears.ColoredShearsItemDropEvent;
 import io.github.InSearchOfName.inSearchOfNamesRandomAdditions.events.coloredShears.ColoredShearsShearEvent;
+import io.github.InSearchOfName.inSearchOfNamesRandomAdditions.events.menu.MenuInventoryClickEvent;
 import io.github.InSearchOfName.inSearchOfNamesRandomAdditions.events.sheepCannon.SheepCannonClickEvent;
 import org.bukkit.plugin.PluginManager;
 

@@ -1,4 +1,4 @@
-package io.github.InSearchOfName.inSearchOfNamesRandomAdditions.events;
+package io.github.InSearchOfName.inSearchOfNamesRandomAdditions.events.menu;
 
 import com.google.inject.Inject;
 import io.github.InSearchOfName.inSearchOfNamesRandomAdditions.guis.MenuInventory;
