@@ -4,7 +4,7 @@ import io.github.InSearchOfName.inSearchOfNamesRandomAdditions.items.ItemService
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 
-public interface SheepCannonService extends ItemService {
+public interface SheepCannon extends ItemService {
 
     void handleFire(Player player, FireModes mode, Velocity velocity);
 

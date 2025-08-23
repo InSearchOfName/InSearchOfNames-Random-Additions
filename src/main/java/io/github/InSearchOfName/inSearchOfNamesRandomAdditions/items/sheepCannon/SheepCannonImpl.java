@@ -14,10 +14,7 @@ import org.bukkit.entity.Sheep;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.InventoryView;
-import org.bukkit.inventory.ItemFlag;
-import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.*;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
@@ -28,7 +25,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-public class SheepCannonServiceImpl implements SheepCannonService {
+public class SheepCannonImpl implements SheepCannon {
     private final InSearchOfNamesRandomAdditions plugin;
     private final NamespacedKey FIRE_MODE_KEY;
     private final NamespacedKey SHEEP_CANNON_KEY;
@@ -38,7 +35,7 @@ public class SheepCannonServiceImpl implements SheepCannonService {
     private final Set<UUID> automaticPlayers = new HashSet<>();
 
     @Inject
-    public SheepCannonServiceImpl(InSearchOfNamesRandomAdditions plugin) {
+    public SheepCannonImpl(InSearchOfNamesRandomAdditions plugin) {
         this.plugin = plugin;
         this.FIRE_MODE_KEY = new NamespacedKey(plugin, "fire_mode");
         this.SHEEP_CANNON_KEY = new NamespacedKey(plugin, "sheep_cannon");
@@ -132,6 +129,40 @@ public class SheepCannonServiceImpl implements SheepCannonService {
             updateMeta(item);
         }
 
+    }
+
+    @Override
+    public ShapedRecipe getRecipe() {
+        ShapedRecipe recipe = new ShapedRecipe(SHEEP_CANNON_KEY, create());
+        // Recipe layout
+        recipe.shape("WSW",
+                "BCB",
+                "WSW");
+
+        // Ingredients
+        recipe.setIngredient('W', new RecipeChoice.MaterialChoice(
+                Material.WHITE_WOOL,
+                Material.ORANGE_WOOL,
+                Material.MAGENTA_WOOL,
+                Material.LIGHT_BLUE_WOOL,
+                Material.YELLOW_WOOL,
+                Material.LIME_WOOL,
+                Material.PINK_WOOL,
+                Material.GRAY_WOOL,
+                Material.LIGHT_GRAY_WOOL,
+                Material.CYAN_WOOL,
+                Material.PURPLE_WOOL,
+                Material.BLUE_WOOL,
+                Material.BROWN_WOOL,
+                Material.GREEN_WOOL,
+                Material.RED_WOOL,
+                Material.BLACK_WOOL
+        ));
+
+        recipe.setIngredient('S', Material.NAME_TAG);
+        recipe.setIngredient('B', Material.BLAZE_ROD);
+        recipe.setIngredient('C', Material.IRON_BLOCK);
+        return recipe;
     }
 
     @Override

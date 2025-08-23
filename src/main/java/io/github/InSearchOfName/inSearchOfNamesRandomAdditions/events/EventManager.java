@@ -4,7 +4,9 @@ import com.google.inject.Inject;
 import io.github.InSearchOfName.inSearchOfNamesRandomAdditions.InSearchOfNamesRandomAdditions;
 import io.github.InSearchOfName.inSearchOfNamesRandomAdditions.events.coloredShears.ColoredShearsClickEvent;
 import io.github.InSearchOfName.inSearchOfNamesRandomAdditions.events.coloredShears.ColoredShearsItemDropEvent;
+import io.github.InSearchOfName.inSearchOfNamesRandomAdditions.events.coloredShears.ColoredShearsPrepareItemCraftEvent;
 import io.github.InSearchOfName.inSearchOfNamesRandomAdditions.events.coloredShears.ColoredShearsShearEvent;
+import io.github.InSearchOfName.inSearchOfNamesRandomAdditions.events.menu.MenuInventoryClickEvent;
 import io.github.InSearchOfName.inSearchOfNamesRandomAdditions.events.sheepCannon.SheepCannonClickEvent;
 import org.bukkit.plugin.PluginManager;
 
@@ -14,6 +16,7 @@ public class EventManager {
     private final ColoredShearsClickEvent coloredShearsClickEvent;
     private final ColoredShearsShearEvent coloredShearsShearEvent;
     private final ColoredShearsItemDropEvent coloredShearsItemDropEvent;
+    private final ColoredShearsPrepareItemCraftEvent coloredShearsPrepareItemCraftEvent;
     private final SheepCannonClickEvent sheepCannonClickEvent;
 
     @Inject
@@ -22,12 +25,14 @@ public class EventManager {
                         ColoredShearsClickEvent coloredShearsClickEvent,
                         ColoredShearsShearEvent coloredShearsShearEvent,
                         ColoredShearsItemDropEvent coloredShearsItemDropEvent,
+                        ColoredShearsPrepareItemCraftEvent coloredShearsPrepareItemCraftEvent,
                         SheepCannonClickEvent sheepCannonClickEvent) {
         this.plugin = plugin;
         this.menuInventoryClickEvent = menuInventoryClickEvent;
         this.coloredShearsClickEvent = coloredShearsClickEvent;
         this.coloredShearsShearEvent = coloredShearsShearEvent;
         this.coloredShearsItemDropEvent = coloredShearsItemDropEvent;
+        this.coloredShearsPrepareItemCraftEvent = coloredShearsPrepareItemCraftEvent;
         this.sheepCannonClickEvent = sheepCannonClickEvent;
     }
 
@@ -37,6 +42,7 @@ public class EventManager {
         pm.registerEvents(coloredShearsClickEvent, plugin);
         pm.registerEvents(coloredShearsShearEvent, plugin);
         pm.registerEvents(coloredShearsItemDropEvent, plugin);
+        pm.registerEvents(coloredShearsPrepareItemCraftEvent, plugin);
         pm.registerEvents(sheepCannonClickEvent, plugin);
     }
 }
