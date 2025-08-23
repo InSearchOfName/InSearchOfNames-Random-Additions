@@ -201,7 +201,8 @@ public class ColoredShearsImpl implements ColoredShears {
         ItemStack[] matrix = event.getInventory().getMatrix();
         Set<Material> foundWools = new HashSet<>();
 
-            if (i == CRAFTING_GRID_CENTER_INDEX) continue; // Skip center slot (shears)
+        for (int i = 0; i < matrix.length; i++) {
+            if (i == 4) continue; // Skip center slot (shears)
             ItemStack item = matrix[i];
             if (item == null) return; // Not fully filled yet
             if (!item.getType().name().endsWith("_WOOL")) {
