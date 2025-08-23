@@ -17,6 +17,6 @@ public class ColoredShearsClickEvent implements Listener {
 
     @EventHandler
     public void onClick(PlayerInteractEvent event) {
-        service.changeColorOfShears(event);
+        service.onClick(event);
     }
 }

@@ -51,7 +51,7 @@ public class ColoredShearsServiceImpl implements ColoredShearsService {
     }
 
     @Override
-    public void changeColorOfShears(PlayerInteractEvent event) {
+    public void onClick(PlayerInteractEvent event) {
         Boolean rightClick = null;
         if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
             rightClick = true;

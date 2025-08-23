@@ -101,13 +101,13 @@ public class ColoredShearsTests {
     }
 
     // ------------------------------------------------------------
-    // Tests for changeColorOfShears
+    // Tests for onClick
     // ------------------------------------------------------------
     @Test
     public void rightClickShouldIncrementShearsColor() {
         ItemStack shears = createShearsInHand();
         PlayerInteractEvent event = new PlayerInteractEvent(player, Action.RIGHT_CLICK_AIR, shears, null, BlockFace.EAST);
-    coloredShearsService.changeColorOfShears(event);
+    coloredShearsService.onClick(event);
 
         int expected = (DyeColor.WHITE.ordinal() + 1) % DyeColor.values().length;
         int actual = player.getItemInHand().getItemMeta()
@@ -120,7 +120,7 @@ public class ColoredShearsTests {
     public void leftClickShouldDecrementShearsColor() {
         ItemStack shears = createShearsInHand();
         PlayerInteractEvent event = new PlayerInteractEvent(player, Action.LEFT_CLICK_AIR, shears, null, BlockFace.EAST);
-    coloredShearsService.changeColorOfShears(event);
+    coloredShearsService.onClick(event);
 
         int expected = (DyeColor.WHITE.ordinal() - 1 + DyeColor.values().length) % DyeColor.values().length;
         int actual = player.getItemInHand().getItemMeta()
