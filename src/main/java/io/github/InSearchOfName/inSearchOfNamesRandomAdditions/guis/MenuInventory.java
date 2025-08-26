@@ -92,14 +92,13 @@ public class MenuInventory implements InventoryHolder {
         return item;
     }
 
-
-    public void nextPage(Player player) {
+    private void nextPage(Player player) {
         page++;
         buildInventory();
         player.openInventory(inventory);
     }
 
-    public void prevPage(Player player) {
+    private void prevPage(Player player) {
         page--;
         buildInventory();
         player.openInventory(inventory);
