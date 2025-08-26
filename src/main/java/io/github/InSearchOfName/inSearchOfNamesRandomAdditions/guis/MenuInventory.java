@@ -45,11 +45,7 @@ public class MenuInventory implements InventoryHolder {
         // Example items
         items.add(coloredShears.create());
         items.add(sheepCannon.create());
-
-        // Fill with extras for testing
-        for (int i = 0; i < 80; i++) {
-            items.add(coloredShears.create());
-        }
+        
 
         buildInventory();
     }
