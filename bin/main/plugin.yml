@@ -1,0 +1,11 @@
+name: InSearchOfNames_Random_Additions
+version: '1.0-SNAPSHOT'
+main: io.github.InSearchOfName.inSearchOfNamesRandomAdditions.InSearchOfNamesRandomAdditions
+api-version: '1.21'
+commands:
+  help:
+    description: Shows help information
+    usage: /<command>
+  menu:
+    description: Opens a menu with all items.
+    usage: /<command>
